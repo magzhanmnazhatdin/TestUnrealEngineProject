@@ -1,0 +1,24 @@
+# Временные папки компиляции и кэша движка
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# Папка для автосейвов и резервных копий
+Autosaves/
+
+# Файлы конфигурации Visual Studio и Rider
+.vs/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# Логи и отчеты об ошибках
+*.log
+
+# Кэш аудио и скомпилированные шейдеры
+AudioCache/
