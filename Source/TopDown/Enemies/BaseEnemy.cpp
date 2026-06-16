@@ -2,6 +2,7 @@
 
 
 #include "BaseEnemy.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -17,7 +18,7 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerActor = GetWorld()->GetFirstPlayerController()->GetPawn();
+	PlayerActor = UGameplayStatics::GetPlayerPawn(this, 0);
 
 	if (GetCharacterMovement()) 
 	{
@@ -33,17 +34,13 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 	if (PlayerActor)
 	{
-		FVector Direction = (PlayerActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		FVector Direction = PlayerActor->GetActorLocation() - GetActorLocation();
+
+		Direction.Z = 0.0f;
+
+		Direction.Normalize();
 
 		AddMovementInput(Direction, 1.0f);
 	}
 
 }
-
-// Called to bind functionality to input
-void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
