@@ -19,9 +19,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	AActor* PlayerActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float Health = 100.0f;
@@ -32,9 +31,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float Speed = 300.0f;
 
-	AActor* PlayerActor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rewards")
+	float ExpRewardValue = 10.0f;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rewards")
+	float HpRewardValue = 0.0f;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 };
