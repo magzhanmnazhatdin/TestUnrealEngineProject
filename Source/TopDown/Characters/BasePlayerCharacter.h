@@ -15,6 +15,9 @@ public:
 	// Sets default values for this character's properties
 	ABasePlayerCharacter();
 
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	void RewardPlayer(float ExpReward, float HpReward);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,5 +36,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
 	float MoveSpeed = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attributes")
+	float ExpToLevelUp = 100.0f;
+
+	void LevelUp();
 
 };
