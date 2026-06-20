@@ -24,3 +24,27 @@ void ABasePlayerCharacter::BeginPlay()
 	
 }
 
+void ABasePlayerCharacter::RewardPlayer(float ExpReward, float HpReward)
+{
+	CurrentHealth = FMath::Clamp(CurrentHealth + HpReward, 0.0f, MaxHealth);
+
+	CurrentExp += ExpReward;
+
+	while (CurrentExp >= ExpToLevelUp)
+	{
+		CurrentExp -= ExpToLevelUp;
+		LevelUp();
+	}
+}
+
+void ABasePlayerCharacter::LevelUp()
+{
+	CurrentLevel++;
+
+	CurrentHealth = MaxHealth;
+
+	ExpToLevelUp *= 1.2f;
+
+	UE_LOG(LogTemp, Warning, TEXT("Level UP! Current level: %d"), CurrentLevel);
+}
+
