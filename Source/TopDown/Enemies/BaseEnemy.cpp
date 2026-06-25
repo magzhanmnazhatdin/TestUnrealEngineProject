@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TopDown/Characters/BasePlayerCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -19,6 +20,11 @@ ABaseEnemy::ABaseEnemy()
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 
 		GetCharacterMovement()->RotationRate = FRotator(0.0f, 400.0f, 0.0f);
+	}
+
+	if (GetCapsuleComponent())
+	{
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("EnemyProfile"));
 	}
 
 }
