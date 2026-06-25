@@ -18,25 +18,35 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AEnemySpawner::SpawnEnemy, SpawnInterval, true);
-	
+	PlayerActor = UGameplayStatics::GetPlayerPawn(this, 0);
+
+	if (GetWorld()) 
+	{
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AEnemySpawner::SpawnEnemy, SpawnInterval, true);
+	}
 }
 
 void AEnemySpawner::SpawnEnemy()
 {
-	if (!EnemyClassToSpawn) return;
+	if (!EnemyClassToSpawn || !PlayerActor) return;
 
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (!PlayerPawn) return;
-
-	FVector PlayerLocation = PlayerPawn->GetActorLocation();
+	FVector PlayerLocation = PlayerActor->GetActorLocation();
 
 	float RandomAngle = FMath::FRandRange(0.0f, 2.0f * PI);
 
-	FVector SpawnOffset(FMath::Cos(RandomAngle) * SpawnRadius, FMath::Sin(RandomAngle) * SpawnRadius, 0.0f);
-	FVector FinalSpawnLocation = PlayerLocation + SpawnOffset;
+	float SpawnX = PlayerLocation.X + (SpawnRadius * FMath::Cos(RandomAngle));
+	float SpawnY = PlayerLocation.Y + (SpawnRadius * FMath::Sin(RandomAngle));
+
+	FVector SpawnLocation(SpawnX, SpawnY, PlayerLocation.Z);
+
+	FRotator SpawnRotation = (PlayerLocation - SpawnLocation).Rotation();
+	SpawnRotation.Pitch = 0.0f;
+	SpawnRotation.Roll = 0.0f;
 
 	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<ABaseEnemy>(EnemyClassToSpawn, FinalSpawnLocation, FRotator::ZeroRotator, SpawnParams);
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	GetWorld()->SpawnActor<ABaseEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+
 }
 
