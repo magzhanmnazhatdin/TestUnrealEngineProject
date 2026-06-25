@@ -15,6 +15,8 @@ public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInsigator, AActor* DamageCauser) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -36,6 +38,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rewards")
 	float HpRewardValue = 0.0f;
+
+	void Die();
 
 public:	
 	// Called every frame

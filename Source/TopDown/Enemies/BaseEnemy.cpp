@@ -4,6 +4,7 @@
 #include "BaseEnemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "TopDown/Characters/BasePlayerCharacter.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -52,4 +53,31 @@ void ABaseEnemy::Tick(float DeltaTime)
 		AddMovementInput(Direction, 1.0f);
 	}
 
+}
+
+float ABaseEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Health -= ActualDamage;
+
+	if (Health <= 0.0f)
+	{
+		Die();
+	}
+
+	return ActualDamage;
+}
+
+void ABaseEnemy::Die()
+{
+	if (PlayerActor)
+	{
+		ABasePlayerCharacter* Player = Cast<ABasePlayerCharacter>(PlayerActor);
+
+		if (Player)
+		{
+			Player->RewardPlayer(ExpRewardValue, HpRewardValue);
+		}
+	}
 }
