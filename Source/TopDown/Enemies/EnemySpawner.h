@@ -19,10 +19,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void SpawnEnemy();
-
-	FTimerHandle SpawnTimerHandle;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 	TSubclassOf<class ABaseEnemy> EnemyClassToSpawn;
 
@@ -32,4 +28,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 	float SpawnRadius = 1500.0f;
 
+	void SpawnEnemy();
+
+private:
+	FTimerHandle SpawnTimerHandle;
+
+	AActor* PlayerActor;
 };
