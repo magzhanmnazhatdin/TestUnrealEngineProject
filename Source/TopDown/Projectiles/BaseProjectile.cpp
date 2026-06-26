@@ -4,6 +4,8 @@
 #include "BaseProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "TopDown/Enemies/BaseEnemy.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
@@ -13,7 +15,15 @@ ABaseProjectile::ABaseProjectile()
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	SphereComp->InitSphereRadius(15.0f);
+	
+	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
+
+	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 	SphereComp->SetCollisionProfileName(TEXT("Projectile"));
+
 	RootComponent = SphereComp;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
@@ -31,5 +41,31 @@ ABaseProjectile::ABaseProjectile()
 void ABaseProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (SphereComp)
+	{
+		SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseProjectile::OnOverlapBegin);
+	}
+}
+
+void ABaseProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != this) 
+	{
+		ABaseEnemy* Enemy = Cast<ABaseEnemy>(OtherActor);
+		if (Enemy)
+		{
+			UGameplayStatics::ApplyDamage(
+				Enemy,
+				DamageValue,
+				GetInstigatorController(),
+				this,
+				nullptr
+			);
+
+			Destroy();
+		}
+	}
 }
 
