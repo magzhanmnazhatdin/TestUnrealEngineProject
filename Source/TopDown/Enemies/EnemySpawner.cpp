@@ -37,7 +37,22 @@ void AEnemySpawner::SpawnEnemy()
 	float SpawnX = PlayerLocation.X + (SpawnRadius * FMath::Cos(RandomAngle));
 	float SpawnY = PlayerLocation.Y + (SpawnRadius * FMath::Sin(RandomAngle));
 
-	FVector SpawnLocation(SpawnX, SpawnY, PlayerLocation.Z);
+	FVector SpawnLocation(SpawnX, SpawnY, PlayerLocation.Z + 500.0f);
+
+	FHitResult HitResult;
+	FVector Start = SpawnLocation;
+	FVector End = SpawnLocation - FVector(0.0f, 0.0f, 1500.0f);
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(PlayerActor);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, QueryParams))
+	{
+		SpawnLocation.Z = HitResult.ImpactPoint.Z + 90.0f;
+	}
+	else
+	{
+		SpawnLocation.Z = PlayerLocation.Z;
+	}
 
 	FRotator SpawnRotation = (PlayerLocation - SpawnLocation).Rotation();
 	SpawnRotation.Pitch = 0.0f;
